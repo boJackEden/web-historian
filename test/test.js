@@ -114,7 +114,10 @@ describe("html fetcher helpers", function(){
     });
 
     waitForThen(
-      function() { return resultArray; },
+      function() {
+        // console.log('test values: ', resultArray, urlArray);
+        return resultArray; },
+        // console.log('test values: ', resultArray, urlArray);
       function(){
         expect(resultArray).to.deep.equal(urlArray);
         done();

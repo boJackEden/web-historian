@@ -15,21 +15,21 @@ var actions = {
     if (parts.path[0] === '/') {
       siteName = parts.path.slice(1);
     }
-    console.log(parts, req.url);
+    // console.log(parts, req.url);
     if(siteName){
       var fileName = archive.paths['archivedSites'] + '/' + siteName;
       if(fs.existsSync(fileName)){
-        console.log("it is a file");
+        // console.log("it is a file");
         responseData = fs.readFileSync(archive.paths['archivedSites'] + '/' + siteName, 'utf8');
       } else  {
-        console.log("We entered the 404 code")
+        // console.log("We entered the 404 code")
         statusCode = 404;
       }
     } else if (parts.path === '/') {
-      console.log('index.html');
+      // console.log('index.html');
       responseData = fs.readFileSync(archive.paths['siteAssets'] + '/index.html', 'utf8');
     } else {
-      console.log("Illegal path");
+      // console.log("Illegal path");
       statusCode = 404;
     }
     res.writeHead(statusCode);
@@ -42,6 +42,8 @@ var actions = {
       var sitesString = fs.readFileSync(archive.paths.list, 'utf8');
       fs.writeFileSync(archive.paths.list, sitesString + dataParts[1] + '\n');
       res.writeHead(302);
+      var loadingHtml = fs.readFileSync(archive.paths['siteAssets'] + '/loading.html', 'utf8');
+      res.write(loadingHtml);
       res.end();
     });
 
