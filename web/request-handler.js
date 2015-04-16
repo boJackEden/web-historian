@@ -11,18 +11,26 @@ var actions = {
     var parts = parser(req.url);
     var responseData;
     var statusCode = 200;
-    if(parts.file){
-      var fileName = archive.paths['archivedSites'] + '/' + parts.file;
-      var stats = fs.statSync(fileName);
-      if(stats.isFile()){
-        // console.log("it is a file");
-        responseData = fs.readFileSync(archive.paths['archivedSites'] + '/' + parts.file, 'utf8');
-      } else {
+    var siteName;
+    if (parts.path[0] === '/') {
+      siteName = parts.path.slice(1);
+    }
+    console.log(parts, req.url);
+    if(siteName){
+      var fileName = archive.paths['archivedSites'] + '/' + siteName;
+      if(fs.existsSync(fileName)){
+        console.log("it is a file");
+        responseData = fs.readFileSync(archive.paths['archivedSites'] + '/' + siteName, 'utf8');
+      } else  {
+        console.log("We entered the 404 code")
         statusCode = 404;
       }
-    } else {
-      // console.log('index.html');
+    } else if (parts.path === '/') {
+      console.log('index.html');
       responseData = fs.readFileSync(archive.paths['siteAssets'] + '/index.html', 'utf8');
+    } else {
+      console.log("Illegal path");
+      statusCode = 404;
     }
     res.writeHead(statusCode);
     res.end(responseData || "file not found");
@@ -30,8 +38,9 @@ var actions = {
 
   "POST": function(req, res){
     collectData(req, function(data){
-      //pick up! expects to write data to site.txt. do this when we get bavck from dinner.
-      console.log('collected Data', data);
+      var dataParts = data.split('=');
+      var sitesString = fs.readFileSync(archive.paths.list, 'utf8');
+      fs.writeFileSync(archive.paths.list, sitesString + dataParts[1] + '\n');
       res.writeHead(302);
       res.end();
     });

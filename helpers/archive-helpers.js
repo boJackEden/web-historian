@@ -26,6 +26,10 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
+  var sitesString = fs.readFileSync(exports.paths.list, 'utf8');
+  return sitesString.split('\n');
+  // make sure the result of this will pass the test
+  // what if there is a trailing \n?
 };
 
 exports.isUrlInList = function(){
