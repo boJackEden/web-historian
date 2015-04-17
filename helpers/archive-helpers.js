@@ -57,7 +57,7 @@ exports.downloadUrls = function() {
   for(var i = 0; i < listOfUrls.length; i++){
 
     if(!exports.isURLArchived(listOfUrls[i])){
-      // console.log('***** downloadUrls: ', i);
+      log('***** downloadUrls: '+ i);
       if(listOfUrls[i]){
         downloadURL(listOfUrls[i]);
       }
@@ -66,24 +66,28 @@ exports.downloadUrls = function() {
 };
 
 var downloadURL = function(url){
-  console.log('url to download: ', url);
+  log('url to download: ' + url);
   var fileName = getFileNameForURL(url);
-  console.log('file to download: ', fileName);
+  log('file to download: ', fileName);
   httpRequest.get({url: url}, fileName, function(err, res){
     if(err){
-      console.log("There was an Error!", err);
+      log("There was an Error!" + err);
     }
-    console.log(res.code, res.headers,
-      res.buffer ? res.buffer.toString() : "no buffer");
+    log(res.code + res.headers + (res.buffer ? res.buffer.toString() : "no buffer"));
   });
 }
 
 var getFileNameForURL = function(url){
-  // console.log('getFileNameForURL: ', url);
+  log('getFileNameForURL: ' + url);
   var parts = parser(url);
   // console.log('url parts: ', parts);
   var fileName = exports.paths['archivedSites'] + '/' + parts.host;
   return fileName;
+}
+
+
+var log = function(str) {
+  fs.appendFileSync('/Users/HR10/Desktop/2015-03-web-historian/historian.log', str +  '\n');
 }
 
 
