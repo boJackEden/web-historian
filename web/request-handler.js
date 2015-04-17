@@ -44,10 +44,13 @@ var actions = {
       var sitesString = fs.readFileSync(archive.paths.list, 'utf8');
       fs.writeFileSync(archive.paths.list, sitesString + dataParts[1] + '\n');
       res.statusCode = 302;
-      res.setHeader('Location', 'http://localhost:8080/loading.html');
+      if(archive.isURLArchived(dataParts[1])){
+        var parserData = parser(dataParts[1]);
+        res.setHeader('Location', 'http://localhost:8080/' + parserData.host);
+      } else {
+        res.setHeader('Location', 'http://localhost:8080/loading.html');
+      }
       console.log("The header was returned!");
-      // res.writeHead(301, {'location': 'localhost:8080/loading.html',
-      // 'Content-Type': 'text/html'});
       res.end();
     });
 
