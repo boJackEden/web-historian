@@ -18,7 +18,9 @@ var actions = {
     // console.log(parts, req.url);
     if(siteName){
       var fileName = archive.paths['archivedSites'] + '/' + siteName;
-      if(fs.existsSync(fileName)){
+      if(siteName === 'loading.html'){
+        responseData = fs.readFileSync(archive.paths['siteAssets'] + '/' + siteName, 'utf8');
+      }else if(fs.existsSync(fileName)){
         // console.log("it is a file");
         responseData = fs.readFileSync(archive.paths['archivedSites'] + '/' + siteName, 'utf8');
       } else  {
@@ -41,9 +43,11 @@ var actions = {
       var dataParts = data.split('=');
       var sitesString = fs.readFileSync(archive.paths.list, 'utf8');
       fs.writeFileSync(archive.paths.list, sitesString + dataParts[1] + '\n');
-      res.writeHead(302);
-      var loadingHtml = fs.readFileSync(archive.paths['siteAssets'] + '/loading.html', 'utf8');
-      res.write(loadingHtml);
+      res.statusCode = 302;
+      res.setHeader('Location', 'http://localhost:8080/loading.html');
+      console.log("The header was returned!");
+      // res.writeHead(301, {'location': 'localhost:8080/loading.html',
+      // 'Content-Type': 'text/html'});
       res.end();
     });
 
